@@ -87,8 +87,8 @@ int main (int argc, char* argv[]) {
     }
 
     // Printing the input values after making sure they are valid
-	cout << "Base number you entered: " << num1 << endl;
-    cout << "Exponent you entered: " << num2 << endl;
+	// cout << "Base number you entered: " << num1 << endl;
+    // cout << "Exponent you entered: " << num2 << endl;
 
     // Converting unsigned int to unsigned short for power function
     // I didn't get any error running this so I assumed we don't need additional casting.
@@ -107,11 +107,11 @@ int main (int argc, char* argv[]) {
     }
 
     // Printing the power result and the sum of its digits
-    cout << "Result of " << num1 << "^" << num2 << " is: " << result_power << endl;
-    cout << "Sum of the digits of " << result_power << " is: " << sum << endl;
+    cout <<  num1 << "^" << num2 << " = " << result_power << endl;
+    cout << "Sum Of Digits: " << sum << endl;
     
 	// Print c++ version, shows language standard
-	cout << "version: " << __cplusplus << endl;
+	// cout << "version: " << __cplusplus << endl;
 	
 	return 0;
 }
