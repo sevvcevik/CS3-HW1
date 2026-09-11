@@ -1,119 +1,172 @@
 // Sevval Cevik
-// Assignment 1
-// Due Date: September 4, 2026
+// Assignment 1 Part 2
+// Due Date: September 11, 2026
 
-#include <iostream> // provides cout
-#include <cstdlib>  // provides atoi 
-#include <string> // needed to use string data type (Source: W3Schools)
+#include <iostream> 
+#include <cstdlib> 
+#include <string> 
+#include <vector> 
+#include <cmath>
+#include <climits> 
 
-using namespace std; // used instead of writing std::cout or std::cin every time
+using namespace std;
 
-unsigned int power(unsigned short a, unsigned short b) { // function signature given in the assignment
+// I used size_t for for loops to avoid size_t warnings that I got for part1 with -Wall 
+// Source for size_t: https://en.cppreference.com/cpp/types/size_t
+// I didn't use size_t for the for loop in power function because b is also an unsigned int
 
-    unsigned int presult = 1; // any number raised to the power of 0 is 1 so that's the initial value
+unsigned long long int power(unsigned int a, unsigned int b) {
 
-    for (unsigned short i = 0; i < b; ++i) { 
+    unsigned long long int presult = 1; 
+    // initialized to 1 because any number raised to the power of 0 is 1
+    // if b is 0, the loop will not run and the function will return 1
+
+    for (unsigned int i = 0; i < b; i++) {
         presult = presult * a;
     }
 
     return presult;
 }
 
-int main (int argc, char* argv[]) { 
-    // Program takes the user input as command line arguments in the main() function
-    // Source: https://www.teach.cs.toronto.edu/~ajr/209/notes/argv.html
-    // argc: Argument count. How many things were typed on the command line, including the program's name.
-    // argv: Argument vector holding the input. 
-    // C++ was designed before std::string existed. 
-    // Each argument is given to the program as a c-style string, which is basically a sequence of char characters.
+vector<int> vectorize_digits(unsigned long long n) {
 
-    if (argc != 3) { // checking if the user entered the correct number of arguments
+    vector<int> digits;
+
+    // https://www.geeksforgeeks.org/cpp/how-to-add-elements-in-a-vector-in-cpp/ 
+    // (used to understand how to add elements to a vector in c++)
+    
+    // without this, 0 would produce an empty vector because the while loop only runs for values greater than 0
+    if (n == 0) {
+        digits.push_back(0);
+        return digits;
+    }
+
+  
+    while (n > 0) {
+        int digit = n % 10;
+
+        // % 10 finds digits right-to-left
+        // that's why I used digits.insert(digits.begin()... to insert each digit at the beginning to preserve the original order
+        digits.insert(digits.begin(), digit);
+        n = n / 10;
+    }
+
+    return digits;
+}
+
+
+int sum_vector(vector<int> v) {
+
+    int sum = 0;
+
+    // https://www.geeksforgeeks.org/cpp/vector-size-in-cpp-stl/
+
+    for (size_t i = 0; i < v.size(); i++) { 
+        // used i < v.size() because first element of a vector is at index 0 and last element is at index v.size() - 1
+        sum = sum + v[i];
+    }
+
+    return sum;
+}
+
+
+string vec_to_string(vector<int> vec) {
+
+    string sresult = "[";
+
+    for (size_t i = 0; i < vec.size(); i++) {
+
+        sresult = sresult + to_string(vec[i]); 
+        // https://www.geeksforgeeks.org/cpp/stdto_string-in-cpp/ (used this source to convert to a string in c++)
+
+        if (i+1 < vec.size()) {
+            sresult = sresult + ", ";
+        }
+    }
+
+    sresult = sresult + "]";
+
+    return sresult;
+}
+
+int main (int argc, char* argv[]) { 
+
+    if (argc != 3) { // input should be in the form of ./power-digit-sum-2 <base> <exponent> so argc should be 3
         cout << "Please enter a base number and an exponent!" << endl;
         return 1;
     }
 
-    // argv[0] is the name of the program
     string num1 = argv[1];
     string num2 = argv[2];
 
-    // Checking the base number
-    for (int i = 0; i < num1.length(); ++i) { // going through each character of the string
+    if (num1.length() == 0 || num2.length() == 0) {
+        cout << "Please enter integers only!" << endl;
+        return 1;
+    }
 
-        // Checking for negative numbers
+
+    for (size_t i = 0; i < num1.length(); i++) {
+
         if (num1[i] == '-') {
             cout << "Please enter a non-negative base number!" << endl;
             return 1;
         }
 
-        // Checking for non-integer characters
         if (num1[i] < '0' || num1[i] > '9') {
             cout << "Please enter integers only!" << endl;
             return 1;
         }
     }
 
-    // Checking the exponent number
-    for (int i = 0; i < num2.length(); ++i) { // going through each character of the string
+  
+    for (size_t i = 0; i < num2.length(); i++) {
 
-        // Checking for negative numbers
         if (num2[i] == '-') {
             cout << "Please enter a non-negative exponent!" << endl;
             return 1;
         }
 
-        // Checking for non-integer characters
         if (num2[i] < '0' || num2[i] > '9') {
             cout << "Please enter integers only!" << endl;
             return 1;
         }
     }
 
-    // The maximum value of an unsigned short integer is 65535 (5 digits).
-    // Checking if the values are too large
-    if (num1.length() > 5 || num2.length() > 5) {
-        cout << "Please enter a base number and an exponent with at most 5 digits!" << endl;
+    // I replaced atoi with strtoul because atoi works with signed integers and may cause issues with large values
+    // Source used for strtoul: https://www.geeksforgeeks.org/cpp/strtol-function-in-c-stl/ 
+    // I converted it to long first to check if the value is within the range of unsigned int before storing it in an unsigned int variable
+    unsigned long blong = strtoul(num1.c_str(), NULL, 10);
+    unsigned long elong = strtoul(num2.c_str(), NULL, 10);
+
+    if (blong > UINT_MAX || elong > UINT_MAX) {
+        cout << "Please enter numbers between 0 and " << UINT_MAX << "!" << endl;
         return 1;
     }
 
-    //Converting the strings to unsigned int to check maximum value of 65535
-    // atoi() https://cplusplus.com/reference/cstdlib/atoi/
-    unsigned int base = atoi(num1.c_str());
-    unsigned int exponent = atoi(num2.c_str());
+    unsigned int base = blong;
+    unsigned int exponent = elong;
 
-    //Checking if the values are bigger than 65535
-    if (base > 65535 || exponent > 65535) {
-        cout << "Please enter a base number and an exponent less than or equal to 65535!" << endl;
-        return 1;
+
+    // Used logarithms to detect overflow before power() performs the multiplication.
+    if (base > 1 && exponent > 0) {
+
+        double result_log = exponent * log10(base);
+        double max_log = 64 * log10(2);
+
+        if (result_log >= max_log) {
+            cout << "The result of the power function is too large and would cause overflow!" << endl;
+            return 1;
+        }
     }
 
-    // Printing the input values after making sure they are valid
-	// cout << "Base number you entered: " << num1 << endl;
-    // cout << "Exponent you entered: " << num2 << endl;
+    unsigned long long int result_power = power(base, exponent);
+    vector<int> digits = vectorize_digits(result_power);
+    int sum = sum_vector(digits);
 
-    // Converting unsigned int to unsigned short for power function
-    // I didn't get any error running this so I assumed we don't need additional casting.
-    unsigned short a = base;
-    unsigned short b = exponent;
 
-    // Calling the power function
-    unsigned int result_power = power(a, b);
-
-    // Calculating the sum of the digits of the result
-    unsigned int sum = 0;
-    unsigned int temp = result_power;
-    while (temp > 0) {
-        sum = sum + (temp % 10);
-        temp = temp / 10; 
-    }
-
-    // Printing the power result and the sum of its digits
     cout <<  num1 << "^" << num2 << " = " << result_power << endl;
     cout << "Sum Of Digits: " << sum << endl;
     
-	// Print c++ version, shows language standard
-	// cout << "version: " << __cplusplus << endl;
 	
 	return 0;
 }
-
-// I desperately needed this program an average of 0 times per day last week :)

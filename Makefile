@@ -1,4 +1,4 @@
+all: main-program
 
-all:
-	g++ -Wall power-digit-sum.cpp -o pds
-
+main-program: power-digit-sum.cpp
+	g++ -Wall -O3 -g -std=c++17 power-digit-sum.cpp -o pds
