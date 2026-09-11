@@ -133,7 +133,7 @@ int main (int argc, char* argv[]) {
     }
 
     // I replaced atoi with strtoul because atoi works with signed integers and may cause issues with large values
-    // Source used for strtoul: https://www.geeksforgeeks.org/cpp/strtol-function-in-c-stl/ 
+    // Source used for strtoul: https://en.cppreference.com/cpp/string/byte/strtoul
     // I converted it to long first to check if the value is within the range of unsigned int before storing it in an unsigned int variable
     unsigned long blong = strtoul(num1.c_str(), NULL, 10);
     unsigned long elong = strtoul(num2.c_str(), NULL, 10);
